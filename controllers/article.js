@@ -1,40 +1,15 @@
-const con = require('../utils/db');
+const articleDbModel = require('../models/article');
+const articleModel = new articleDbModel();
 
-const getAllArticles = (req, res) => {
-    let query = 'SELECT * FROM article';
-    let articles = [];
-    con.query(query, (err, result) => {
-        if (err) throw err;
-        articles = result;
-        res.render('index' , {articles: articles});
-    })
-};
+class ArticleController {
+    constructor() {
+        const articles = [];
+    }
 
-const getArticleBySlug = (req, res) => {
-    let query = `SELECT *, author.name AS author, article.name 
-                AS article FROM article INNER JOIN author 
-                ON article.author_id = author.id WHERE slug = '${req.params.slug}'`;
-    let article;
-    con.query(query, (err, result) => {
-        if (err) throw err;
-        article = result;
-        res.render('article' , {article: article});
-    });
-};
+    async getAllArticles(req, res) {
+        const articles = await articleModel.findAll();
+        res.status(201).json({articles: articles});
+    }
+}
 
-const getAuthorArticles = (req, res) => {
-    let query = `SELECT author.name AS author, article.name AS article, article.slug AS slug, article.image AS image FROM article INNER JOIN author ON article.author_id = author.id WHERE author.id = ${req.params.id}`;
-    let articles = [];
-    con.query(query, (err, result) => {
-        if (err) throw err;
-        articles = result;
-        author = result[0].author;
-        res.render('author' , {articles: articles, author: author});
-    });
-};
-
-module.exports = {
-    getAllArticles,
-    getArticleBySlug,
-    getAuthorArticles
-};
+module.exports = ArticleController;
