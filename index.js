@@ -26,8 +26,10 @@ con.connect(function(err) {
 });
 
 const articleRoutes = require('./routes/article');
+const authorRoutes = require('./routes/author');
 
-app.use('/', articleRoutes);
+app.use('/article', articleRoutes);
+app.use('/author', authorRoutes);
 
 app.listen(3000, () => {
     console.log('Server is running at port 3000');
